@@ -6,7 +6,7 @@
 
 <script>
 import Form from './components/Form.vue'
-import webtemplate from './../physical-doc-constrained.json'
+import webtemplate from './../Blood pressure template.json'
 export default {
   name: 'App',
   components: {

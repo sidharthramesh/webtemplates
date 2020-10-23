@@ -1,7 +1,7 @@
 <template>
 	<section class="section">
 		<div class="columns">
-			<div class="column">
+			<div class="column is-4">
 				<div class="box">
 					<h2 class="subtitle">{{ template.tree.name }}</h2>
 					<FormulateForm v-model="formValues" :schema="formulateSchema">
@@ -63,6 +63,7 @@ export default {
 				// Type transformation
 				inputs = inputs.map((input) => ({
 					...input,
+					validation: null,
 					type: typeMap[input.type],
 				}));
 				// Specific transformations
