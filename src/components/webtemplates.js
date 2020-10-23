@@ -112,7 +112,12 @@ function getFormulateSchema(template, defaultFirstSelect=false){
             };
             return inputGroup;
         } else {
-            return { ...inputs[0], label: name, name: aqlPath, group };
+            let input = inputs[0]
+            let path = aqlPath
+            if (input.suffix){
+                path = `${aqlPath}|${input.suffix}`
+            }
+            return { ...input, label: name, name: path, group };
         }
     });
     let groupedSchema = {}

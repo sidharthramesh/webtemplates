@@ -3,16 +3,18 @@
 		<div class="columns">
 			<div class="column is-4">
 				<div class="box">
-					<h2 class="subtitle">{{ template.tree.name }}</h2>
-					<FormulateForm v-model="formValues" :schema="schema">
-						<FormulateInput type="submit" input-class="button is-success is-fullwidth">
-							Submit
-						</FormulateInput>
+					<h2 class="is-size-5 has-text-weight-bold">{{ template.tree.name }}</h2>
+					<hr>
+					<FormulateForm v-model="formValues" :schema="schema" name="composition" @submit="submit">
+							<div class="buttons">
+								<button class="button is-success" type="submit">Submit</button>
+								<button class="button" type="button">Reset</button>
+							</div>
 					</FormulateForm>
 				</div>
 			</div>
 		</div>
-		<pre>{{ flattened }}</pre>
+		<pre>Result : {{ flattened }}</pre>
 	</section>
 </template>
 
@@ -23,15 +25,19 @@ export default {
 	data() {
 		return {
 			formValues: {},
-			schema: getFormulateSchema(this.template)
+			schema: getFormulateSchema(this.template, true),
 		};
 	},
-	methods:{
-		
+	methods: {
+		reset(){
+			this.$formulate.reset('composition')
+		},
+		submit(){
+			console.log(this.flattened)
+		}
 	},
 	computed: {
 		flattened(){
-			console.log("hello")
 			let aqlValues = {}
 			Object.values(this.formValues).forEach(values => {
 				let value = values[0]
