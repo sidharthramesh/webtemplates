@@ -25,7 +25,7 @@ export default {
 	data() {
 		return {
 			formValues: {},
-			schema: getFormulateSchema(this.template, true),
+			schema: getFormulateSchema(this.template),
 		};
 	},
 	methods: {
