@@ -14,47 +14,52 @@
 				</div>
 			</div>
 		</div>
-		<pre>Result : {{ flattened }}</pre>
+		<div class="columns">
+			<div class="column">
+<pre>{{ formValues }}</pre>
+			</div>
+			<div class="column">
+<pre>{{schema}}</pre>
+			</div>
+		</div>
+		
 	</section>
 </template>
 
 <script>
-import {getFormulateSchema} from './webtemplates'
+import {generateSchema} from './webtemplates'
 export default {
 	props: ["template"],
 	data() {
 		return {
 			formValues: {},
-			schema: getFormulateSchema(this.template),
+			schema: generateSchema(this.template),
 		};
 	},
 	methods: {
-		reset(){
-			this.$formulate.reset('composition')
-		},
 		submit(){
 			console.log(this.flattened)
 		}
 	},
 	computed: {
-		flattened(){
-			let aqlValues = {}
-			Object.values(this.formValues).forEach(values => {
-				let value = values[0]
-				Object.keys(value).forEach(aqlPath=>{
-					let result = value[aqlPath]
-					if (typeof result == 'object') {
-						let r = result[0]
-						Object.keys(r).forEach(suffix=>{
-							aqlValues[`${aqlPath}|${suffix}`] = r[suffix]
-						})
-					} else {
-						aqlValues[aqlPath] = result
-					}
-				})
-				})
-			return aqlValues
-		}
+		// flattened(){
+		// 	let aqlValues = {}
+		// 	Object.values(this.formValues).forEach(values => {
+		// 		let value = values[0]
+		// 		Object.keys(value).forEach(aqlPath=>{
+		// 			let result = value[aqlPath]
+		// 			if (typeof result == 'object') {
+		// 				let r = result[0]
+		// 				Object.keys(r).forEach(suffix=>{
+		// 					aqlValues[`${aqlPath}|${suffix}`] = r[suffix]
+		// 				})
+		// 			} else {
+		// 				aqlValues[aqlPath] = result
+		// 			}
+		// 		})
+		// 		})
+		// 	return aqlValues
+		// }
 	},
 };
 </script>
