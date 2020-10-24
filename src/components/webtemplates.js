@@ -85,7 +85,24 @@ function flattenForm(schema, formValues){
     let flatValues = {}
     // Walk through all elements in schema
     // Check for item in formValues
+    // Check for children if group
+    // Add path:0 if multiple
+    // Add path|suffix if not multiple,
     // Push to flatform based on type
-    return schema, formValues
+    schema.forEach(obj=>{
+        let {name, type, multiple} = obj
+        let currentValue = formValues[name]
+        if (currentValue){
+            if (type === 'group'){
+                if (multiple) {
+                    let path = name + ':0'
+                    formValues[name]
+                }
+            }
+        }
+    })
+    
+    return flatValues
 }
+
 export { generateSchema, flattenForm }
