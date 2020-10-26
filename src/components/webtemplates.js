@@ -9,38 +9,53 @@ function handleInput(input) {
         TIME: "time",
         BOOLEAN: "checkbox"
     };
-    let newInput = {...input, type: typeMap[input.type], validation: undefined}
-    if (newInput.type == "select"){
-        newInput = {...newInput, options: newInput.list}
+    let newInput = { ...input, type: typeMap[input.type], validation: undefined }
+    if (newInput.type == "select") {
+        newInput = { ...newInput, options: newInput.list, placeholder: "Select" }
     }
     return newInput
 }
 
-function extractInputs(tree, path = '', parentName = null) {
-    let { max, children, id, inputs, name, rmType, inContext } = tree
-    if (inContext){
+function extractInputs(tree, path = '', parentName) {
+    let { max, children, id, inputs, name, rmType, inContext, annotations } = tree
+    if (inContext) {
         return
     }
-    name = name || id
     let newPath = `${path}/${id}`
-    if (max > 1 || max == -1) {
-        if (['EVENT', 'POINT_EVENT'].includes(rmType)) {
-            name = parentName
+    name = name || id
+    let inEvent = false
+    if (['EVENT', 'POINT_EVENT'].includes(rmType)) {
+        inEvent = true
+        name = `${parentName} (${name})`
+    }
+    if (max > 1 || max == -1 || inEvent) {
+        let repeatable = false
+        let label
+        if (max > 1 || max == -1) {
+            repeatable = true
         }
+        if (children) {
+            children = children
+                .map(child => extractInputs(child, path = '', parentName = name))
+                .filter(i => i)
+                .flat()
+            label = name
+        } else {
+            tree.max = 0
+            tree.id = ''
+            children = extractInputs(tree, path='', parentName = name)
+        }
+
         return {
             type: 'group',
-            // repeatable: true,    
-            multiple: true,
             name: newPath,
-            label: name,
-            children: children
-                .map(child => extractInputs(child, path='', parentName=name))
-                .filter(i => i)
-                .flat(),
+            label,
+            repeatable,
+            children
         }
     }
     if (inputs) {
-        inputs = inputs.map(input=>handleInput(input))
+        inputs = inputs.map(input => handleInput(input))
         if (inputs.length > 1) {
             let children = inputs.map(input => ({
                 ...input,
@@ -68,10 +83,27 @@ function extractInputs(tree, path = '', parentName = null) {
     }
     if (children) {
         return children
-            .map(child => 
+            .map(child =>
                 extractInputs(child, newPath, name))
             .filter(i => i)
             .flat()
+    }
+    if (annotations) {
+        let { snomed } = annotations
+        if (snomed) {
+            return {
+                type: "snomed",
+                label: name,
+                name: newPath,
+                eql: snomed,
+                options: [
+                    { value: 1, label: 'Jon Doe' },
+                    { value: 2, label: 'Jane Roe' },
+                    { value: 3, label: 'Bob Foe' },
+                    { value: 4, label: 'Ben Cho' },
+                ]
+            }
+        }
     }
 }
 
@@ -81,7 +113,7 @@ function generateSchema(template) {
     return schema
 }
 
-function flattenForm(schema, formValues){
+function flattenForm(schema, formValues) {
     let flatValues = {}
     // Walk through all elements in schema
     // Check for item in formValues
@@ -89,19 +121,19 @@ function flattenForm(schema, formValues){
     // Add path:0 if multiple
     // Add path|suffix if not multiple,
     // Push to flatform based on type
-    schema.forEach(obj=>{
-        let {name, type, multiple} = obj
+    schema.forEach(obj => {
+        let { name, type, multiple } = obj
         let currentValue = formValues[name]
-        if (currentValue){
-            if (type === 'group'){
+        if (currentValue) {
+            if (type === 'group') {
                 if (multiple) {
-                    let path = name + ':0'
+                    // let path = name + ':0'
                     formValues[name]
                 }
             }
         }
     })
-    
+
     return flatValues
 }
 

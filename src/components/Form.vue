@@ -16,7 +16,7 @@
 		</div>
 		<div class="columns">
 			<div class="column">
-<pre>{{ formValues }}</pre>
+<!-- <pre>{{ formValues }}</pre> -->
 			</div>
 			<div class="column">
 <pre>{{schema}}</pre>
@@ -42,24 +42,6 @@ export default {
 		}
 	},
 	computed: {
-		// flattened(){
-		// 	let aqlValues = {}
-		// 	Object.values(this.formValues).forEach(values => {
-		// 		let value = values[0]
-		// 		Object.keys(value).forEach(aqlPath=>{
-		// 			let result = value[aqlPath]
-		// 			if (typeof result == 'object') {
-		// 				let r = result[0]
-		// 				Object.keys(r).forEach(suffix=>{
-		// 					aqlValues[`${aqlPath}|${suffix}`] = r[suffix]
-		// 				})
-		// 			} else {
-		// 				aqlValues[aqlPath] = result
-		// 			}
-		// 		})
-		// 		})
-		// 	return aqlValues
-		// }
 	},
 };
 </script>
